@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>屏幕PPI计算器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .calculator {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>屏幕PPI计算器</h2>
+        <div class="input-group">
+            <label>水平像素数：</label>
+            <input type="number" id="width" placeholder="例如 1920">
+        </div>
+        <div class="input-group">
+            <label>垂直像素数：</label>
+            <input type="number" id="height" placeholder="例如 1080">
+        </div>
+        <div class="input-group">
+            <label>屏幕尺寸（英寸）：</label>
+            <input type="number" step="0.1" id="size" placeholder="例如 15.6">
+        </div>
+        <button onclick="calculatePPI()">计算PPI</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculatePPI() {
+            // 获取输入值
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const size = parseFloat(document.getElementById('size').value);
+
+            // 验证输入
+            if (isNaN(width) || isNaN(height) || isNaN(size) || 
+                width <= 0 || height <= 0 || size <= 0) {
+                showResult("请输入有效的正数值", "error");
+                return;
+            }
+
+            // 计算PPI
+            const diagonalPixels = Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2));
+            const ppi = Math.round(diagonalPixels / size);
+
+            // 显示结果
+            let rating = "普通屏幕";
+            if (ppi > 450) rating = "超高清屏幕（例如旗舰手机）";
+            else if (ppi > 300) rating = "高清屏幕（例如高端笔记本）";
+            else if (ppi > 200) rating = "普通屏幕（主流显示器）";
+            
+            showResult(`PPI值：${ppi}<br>密度评级：${rating}`, "success");
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = message;
+            resultDiv.className = type; // 可用于扩展不同样式
+        }
+    </script>
+</body>
+</html>
